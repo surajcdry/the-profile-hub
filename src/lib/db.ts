@@ -1,16 +1,18 @@
-import { neon } from "@neondatabase/serverless";
+import ws from "ws";
+import { neonConfig } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@/generated/prisma/client";
+
+// Use Neon's WebSocket driver instead of pg TCP — eliminates full TCP+TLS
+// handshake on cold starts, cutting latency on Vercel serverless.
+neonConfig.webSocketConstructor = ws;
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
 };
 
 function createPrismaClient() {
-    // neon() uses HTTP instead of TCP — no TLS handshake on cold starts,
-    // which cuts ~300–800 ms of latency on Vercel serverless.
-    const sql = neon(process.env.DATABASE_URL!);
-    const adapter = new PrismaNeon(sql);
+    const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
     return new PrismaClient({
         adapter,
         log:
