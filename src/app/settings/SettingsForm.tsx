@@ -25,6 +25,43 @@ type Props = {
 
 const initialState: ProfileFormState = { success: false };
 
+// ─── Social prefix config ─────────────────────────────────────────────────────
+
+const SOCIAL_PREFIXES: Record<string, string> = {
+    linkedinUrl: "linkedin.com/in/",
+    githubUrl: "github.com/",
+    instagramUrl: "instagram.com/",
+    youtubeUrl: "youtube.com/@",
+    twitterUrl: "x.com/",
+};
+
+/** Strip known base URL patterns from a stored full URL, returning just the username portion. */
+function extractUsername(field: string, fullUrl: string | null | undefined): string {
+    if (!fullUrl) return "";
+    const patterns = [
+        // https://www.instagram.com/username, http://instagram.com/username, etc.
+        /^https?:\/\/(?:www\.)?linkedin\.com\/in\//i,
+        /^https?:\/\/(?:www\.)?github\.com\//i,
+        /^https?:\/\/(?:www\.)?instagram\.com\//i,
+        /^https?:\/\/(?:www\.)?youtube\.com\/@?/i,
+        /^https?:\/\/(?:www\.)?(?:twitter|x)\.com\//i,
+    ];
+    const prefixMap: Record<string, number> = {
+        linkedinUrl: 0,
+        githubUrl: 1,
+        instagramUrl: 2,
+        youtubeUrl: 3,
+        twitterUrl: 4,
+    };
+    const idx = prefixMap[field];
+    if (idx !== undefined && patterns[idx]) {
+        const stripped = fullUrl.replace(patterns[idx], "");
+        // Remove trailing slash
+        return stripped.replace(/\/+$/, "");
+    }
+    return fullUrl;
+}
+
 // ─── Field components ─────────────────────────────────────────────────────────
 
 function Field({
@@ -75,6 +112,58 @@ function Field({
                     className={`${base} ${borderClass}`}
                 />
             )}
+            {errors?.map((e) => (
+                <p key={e} className="mt-1 text-xs text-red-500 dark:text-red-400">
+                    {e}
+                </p>
+            ))}
+        </div>
+    );
+}
+
+/** A text input with a fixed prefix shown inline (e.g. "instagram.com/"). */
+function PrefixField({
+    label,
+    name,
+    prefix,
+    defaultValue,
+    errors,
+    placeholder,
+}: {
+    label: string;
+    name: string;
+    prefix: string;
+    defaultValue?: string | null;
+    errors?: string[];
+    placeholder?: string;
+}) {
+    const borderClass = errors?.length ? "border-red-400 dark:border-red-500" : "border-zinc-200 dark:border-zinc-800";
+
+    return (
+        <div>
+            <label
+                htmlFor={name}
+                className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400 dark:text-zinc-500"
+            >
+                {label}
+            </label>
+            <div
+                className={`flex items-stretch overflow-hidden rounded-2xl border transition-all focus-within:border-brand focus-within:shadow-sm ${borderClass}`}
+            >
+                {/* Fixed prefix — visually distinct background */}
+                <span className="flex select-none items-center whitespace-nowrap border-r border-zinc-200 bg-zinc-100 px-3.5 text-sm font-medium text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+                    {prefix}
+                </span>
+                {/* Username input */}
+                <input
+                    id={name}
+                    name={name}
+                    type="text"
+                    defaultValue={defaultValue ?? ""}
+                    placeholder={placeholder}
+                    className="min-w-0 flex-1 bg-zinc-50/80 px-3.5 py-3 text-sm font-medium text-zinc-900 outline-none placeholder:font-normal placeholder:text-zinc-400 focus:bg-white dark:bg-zinc-900/80 dark:text-zinc-50 dark:focus:bg-zinc-900"
+                />
+            </div>
             {errors?.map((e) => (
                 <p key={e} className="mt-1 text-xs text-red-500 dark:text-red-400">
                     {e}
@@ -180,45 +269,45 @@ export default function SettingsForm({ user, callbackUrl }: Props) {
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                     Social links
                 </h2>
-                <Field
+                <PrefixField
                     label="LinkedIn"
                     name="linkedinUrl"
-                    defaultValue={user.linkedinUrl}
+                    prefix={SOCIAL_PREFIXES.linkedinUrl}
+                    defaultValue={extractUsername("linkedinUrl", user.linkedinUrl)}
                     errors={state.errors?.linkedinUrl}
-                    type="url"
-                    placeholder="https://linkedin.com/in/yourname"
+                    placeholder="yourname"
                 />
-                <Field
+                <PrefixField
                     label="GitHub"
                     name="githubUrl"
-                    defaultValue={user.githubUrl}
+                    prefix={SOCIAL_PREFIXES.githubUrl}
+                    defaultValue={extractUsername("githubUrl", user.githubUrl)}
                     errors={state.errors?.githubUrl}
-                    type="url"
-                    placeholder="https://github.com/yourname"
+                    placeholder="yourname"
                 />
-                <Field
+                <PrefixField
                     label="Instagram"
                     name="instagramUrl"
-                    defaultValue={user.instagramUrl}
+                    prefix={SOCIAL_PREFIXES.instagramUrl}
+                    defaultValue={extractUsername("instagramUrl", user.instagramUrl)}
                     errors={state.errors?.instagramUrl}
-                    type="url"
-                    placeholder="https://instagram.com/yourname"
+                    placeholder="yourname"
                 />
-                <Field
+                <PrefixField
                     label="YouTube"
                     name="youtubeUrl"
-                    defaultValue={user.youtubeUrl}
+                    prefix={SOCIAL_PREFIXES.youtubeUrl}
+                    defaultValue={extractUsername("youtubeUrl", user.youtubeUrl)}
                     errors={state.errors?.youtubeUrl}
-                    type="url"
-                    placeholder="https://youtube.com/@yourchannel"
+                    placeholder="yourchannel"
                 />
-                <Field
+                <PrefixField
                     label="X / Twitter"
                     name="twitterUrl"
-                    defaultValue={user.twitterUrl}
+                    prefix={SOCIAL_PREFIXES.twitterUrl}
+                    defaultValue={extractUsername("twitterUrl", user.twitterUrl)}
                     errors={state.errors?.twitterUrl}
-                    type="url"
-                    placeholder="https://x.com/yourhandle"
+                    placeholder="yourhandle"
                 />
             </div>
 

@@ -17,7 +17,7 @@ import UnlockListForm from "./UnlockListForm";
 
 type Props = {
     params: Promise<{ code: string }>;
-    searchParams: Promise<{ join?: string }>;
+    searchParams: Promise<{ join?: string; autoJoin?: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ListPage({ params, searchParams }: Props) {
     const { code } = await params;
-    const { join } = await searchParams;
+    const { join, autoJoin } = await searchParams;
     const uppercaseCode = code.toUpperCase();
 
     const [session, headersList, cookieStore] = await Promise.all([auth(), headers(), cookies()]);
@@ -62,12 +62,29 @@ export default async function ListPage({ params, searchParams }: Props) {
     const isUnlocked = cookieStore.get(`unlocked_list_${uppercaseCode}`)?.value === "true";
     const needsUnlock = !isMember && !isCreator && list.passwordEnabled && !isUnlocked;
 
-    // Feature 3: if ?join=1 is present, the user just signed in wanting to join.
-    // If they're signed in but not yet a member → redirect to settings with callbackUrl.
-    // This way they can fill in their profile info, hit Save, and land back on this list.
+    // Auto-join: if ?autoJoin=1 is present (user just saved profile and came back),
+    // join them to the list automatically so they don't have to click Join again.
+    if (autoJoin === "1" && session?.user?.id && !isMember && !isCreator) {
+        let joined = false;
+        try {
+            await db.listMember.create({
+                data: { listId: list.id, userId: session.user.id },
+            });
+            joined = true;
+        } catch {
+            // If already a member (P2002 unique constraint), just continue rendering
+        }
+        // redirect() must be called outside try-catch (it throws internally in Next.js)
+        if (joined) {
+            redirect(`/list/${uppercaseCode}`);
+        }
+    }
+
+    // If ?join=1 is present, the user just signed in wanting to join.
+    // Redirect to settings so they can fill in profile info, then come back with autoJoin.
     if (join === "1" && session?.user?.id && !isMember && !isCreator) {
-        const callbackUrl = `/list/${uppercaseCode}`;
-        redirect(`/settings?callbackUrl=${encodeURIComponent(callbackUrl)}&autoJoin=${uppercaseCode}`);
+        const callbackUrl = `/list/${uppercaseCode}?autoJoin=1`;
+        redirect(`/settings?callbackUrl=${encodeURIComponent(callbackUrl)}`);
     }
 
     const host = headersList.get("host") || "localhost:3000";
@@ -196,7 +213,11 @@ export default async function ListPage({ params, searchParams }: Props) {
                 ) : (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {list.members.map((member) => (
-                            <ProfileCard key={member.id} user={member.user} />
+                            <ProfileCard
+                                key={member.id}
+                                user={member.user}
+                                role={member.userId === list.creatorId ? "Host" : "Member"}
+                            />
                         ))}
                     </div>
                 )}

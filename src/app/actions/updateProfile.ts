@@ -4,7 +4,33 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 
+// ── Social prefix config (must match the client component) ────────────────────
+
+const SOCIAL_PREFIXES: Record<string, string> = {
+    linkedinUrl: "https://linkedin.com/in/",
+    githubUrl: "https://github.com/",
+    instagramUrl: "https://instagram.com/",
+    youtubeUrl: "https://youtube.com/@",
+    twitterUrl: "https://x.com/",
+};
+
+/** Build a full URL from a username, or return null if empty. */
+function buildUrl(field: string, username: string | undefined): string | null {
+    const trimmed = username?.trim();
+    if (!trimmed) return null;
+    const prefix = SOCIAL_PREFIXES[field];
+    if (!prefix) return trimmed;
+    // If the user pasted a full URL anyway, just keep it
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return `${prefix}${trimmed}`;
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+
 const urlField = z.string().url("Must be a valid URL").or(z.literal("")).optional();
+
+// For social fields, accept a simple username string (no dots required, just non-empty)
+const usernameField = z.string().max(200).optional();
 
 const ProfileSchema = z.object({
     name: z.string().min(1, "Name is required").max(100),
@@ -12,11 +38,11 @@ const ProfileSchema = z.object({
     contactEmail: z.string().email("Must be a valid email").or(z.literal("")).optional(),
     phoneNumber: z.string().max(30).optional(),
     websiteUrl: urlField,
-    linkedinUrl: urlField,
-    githubUrl: urlField,
-    instagramUrl: urlField,
-    youtubeUrl: urlField,
-    twitterUrl: urlField,
+    linkedinUrl: usernameField,
+    githubUrl: usernameField,
+    instagramUrl: usernameField,
+    youtubeUrl: usernameField,
+    twitterUrl: usernameField,
 });
 
 export type ProfileFormState = {
@@ -66,11 +92,11 @@ export async function updateProfile(
                 contactEmail: parsed.data.contactEmail || null,
                 phoneNumber: parsed.data.phoneNumber || null,
                 websiteUrl: parsed.data.websiteUrl || null,
-                linkedinUrl: parsed.data.linkedinUrl || null,
-                githubUrl: parsed.data.githubUrl || null,
-                instagramUrl: parsed.data.instagramUrl || null,
-                youtubeUrl: parsed.data.youtubeUrl || null,
-                twitterUrl: parsed.data.twitterUrl || null,
+                linkedinUrl: buildUrl("linkedinUrl", parsed.data.linkedinUrl),
+                githubUrl: buildUrl("githubUrl", parsed.data.githubUrl),
+                instagramUrl: buildUrl("instagramUrl", parsed.data.instagramUrl),
+                youtubeUrl: buildUrl("youtubeUrl", parsed.data.youtubeUrl),
+                twitterUrl: buildUrl("twitterUrl", parsed.data.twitterUrl),
             },
         });
 

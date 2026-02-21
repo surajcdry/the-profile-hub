@@ -46,7 +46,7 @@ function LinkIcon({ href, label, children, hoverClass }: LinkItemProps) {
     );
 }
 
-export default function ProfileCard({ user }: { user: ProfileUser }) {
+export default function ProfileCard({ user, role = "Member" }: { user: ProfileUser; role?: string }) {
     const firstName = user.name?.split(" ")[0] || "Someone";
     const initials = getInitials(user.name);
     const hasAnyLink =
@@ -80,7 +80,7 @@ export default function ProfileCard({ user }: { user: ProfileUser }) {
                     <h3 className="truncate font-semibold leading-tight text-zinc-900 dark:text-zinc-50">
                         {user.name || "Anonymous"}
                     </h3>
-                    <p className="mt-0.5 text-xs text-zinc-400 dark:text-zinc-500">Member</p>
+                    <p className={`mt-0.5 text-xs ${role === "Host" ? "font-medium text-brand dark:text-brand-light" : "text-zinc-400 dark:text-zinc-500"}`}>{role}</p>
                 </div>
             </div>
 
