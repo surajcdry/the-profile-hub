@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  image        String?
+  bio          String?
+  linkedinUrl  String?
+  githubUrl    String?
+  instagramUrl String?
+  phoneNumber  String?
+
+  createdLists List[]
+  memberships  ListMember[]
+
+  @@map("users")
+}
+
+model List {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique @db.VarChar(6)
+  createdAt DateTime @default(now())
+  creatorId String
+
+  creator User         @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  members ListMember[]
+
+  @@map("lists")
+}
+
+model ListMember {
+  id       String   @id @default(cuid())
+  listId   String
+  userId   String
+  joinedAt DateTime @default(now())
+
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, userId])
+  @@map("list_members")
+}
