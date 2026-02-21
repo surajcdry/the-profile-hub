@@ -38,6 +38,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# dev / debug artifacts — never commit
+*.log
+dev_server.log
+err.html
+test-*.ts
+test-*.js
+memory/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

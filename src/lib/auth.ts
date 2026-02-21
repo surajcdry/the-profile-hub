@@ -13,6 +13,10 @@ const prismAuth = new PrismaClient({ adapter });
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: PrismaAdapter(prismAuth),
+    // Required for Vercel / any deployment behind a reverse proxy.
+    // Without this, NextAuth cannot determine the callback URL and throws
+    // a "server error" during the OAuth flow in production.
+    trustHost: true,
     providers: [
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID!,
