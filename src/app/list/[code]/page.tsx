@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
@@ -17,6 +17,7 @@ import UnlockListForm from "./UnlockListForm";
 
 type Props = {
     params: Promise<{ code: string }>;
+    searchParams: Promise<{ join?: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
@@ -29,8 +30,9 @@ export async function generateMetadata({ params }: Props) {
     return { title: list ? `${list.name} · The Profile Hub` : "List Not Found" };
 }
 
-export default async function ListPage({ params }: Props) {
+export default async function ListPage({ params, searchParams }: Props) {
     const { code } = await params;
+    const { join } = await searchParams;
     const uppercaseCode = code.toUpperCase();
 
     const [session, headersList, cookieStore] = await Promise.all([auth(), headers(), cookies()]);
@@ -59,6 +61,14 @@ export default async function ListPage({ params }: Props) {
 
     const isUnlocked = cookieStore.get(`unlocked_list_${uppercaseCode}`)?.value === "true";
     const needsUnlock = !isMember && !isCreator && list.passwordEnabled && !isUnlocked;
+
+    // Feature 3: if ?join=1 is present, the user just signed in wanting to join.
+    // If they're signed in but not yet a member → redirect to settings with callbackUrl.
+    // This way they can fill in their profile info, hit Save, and land back on this list.
+    if (join === "1" && session?.user?.id && !isMember && !isCreator) {
+        const callbackUrl = `/list/${uppercaseCode}`;
+        redirect(`/settings?callbackUrl=${encodeURIComponent(callbackUrl)}&autoJoin=${uppercaseCode}`);
+    }
 
     const host = headersList.get("host") || "localhost:3000";
     const protocol = headersList.get("x-forwarded-proto") ?? (process.env.NODE_ENV === "development" ? "http" : "https");
@@ -117,7 +127,7 @@ export default async function ListPage({ params }: Props) {
                             <QRCodeButton
                                 url={listUrl}
                                 name={list.name}
-                                password={isCreator ? list.password : null}
+                                password={(isCreator || isMember || isUnlocked) && list.passwordEnabled ? list.password : null}
                             />
                             {isCreator && (
                                 <ListSettingsModal
@@ -135,10 +145,11 @@ export default async function ListPage({ params }: Props) {
                                 <JoinListButton
                                     code={list.code}
                                     passwordEnabled={list.passwordEnabled}
+                                    isUnlocked={isUnlocked}
                                 />
                             ) : (
                                 <Link
-                                    href={`/sign-in?callbackUrl=/list/${list.code}`}
+                                    href={`/sign-in?callbackUrl=${encodeURIComponent(`/list/${list.code}?join=1`)}`}
                                     className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-dark"
                                 >
                                     Sign in to join

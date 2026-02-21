@@ -10,7 +10,12 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 export const metadata = { title: "Settings · Profile Hub" };
 
-export default async function SettingsPage() {
+type Props = {
+    searchParams: Promise<{ callbackUrl?: string; autoJoin?: string }>;
+};
+
+export default async function SettingsPage({ searchParams }: Props) {
+    const { callbackUrl } = await searchParams;
     const session = await auth();
 
     if (!session?.user?.id) {
@@ -89,7 +94,7 @@ export default async function SettingsPage() {
                     </p>
                 </div>
 
-                <SettingsForm user={user} />
+                <SettingsForm user={user} callbackUrl={callbackUrl} />
             </main>
 
             {/* ── Footer ─────────────────────────────────────── */}

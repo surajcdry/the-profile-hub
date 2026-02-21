@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
 export type JoinListState = {
@@ -36,9 +37,15 @@ export async function joinList(
 
         // Validate password if protection is enabled and a password has been set
         if (list.passwordEnabled && list.password) {
-            const submitted = (formData.get("password") as string)?.trim() || "";
-            if (!submitted || submitted !== list.password) {
-                return { success: false, message: "Incorrect password." };
+            // If the user already unlocked the list via the cookie, skip the password check
+            const cookieStore = await cookies();
+            const isUnlocked = cookieStore.get(`unlocked_list_${code}`)?.value === "true";
+
+            if (!isUnlocked) {
+                const submitted = (formData.get("password") as string)?.trim() || "";
+                if (!submitted || submitted !== list.password) {
+                    return { success: false, message: "Incorrect password." };
+                }
             }
         }
 

@@ -8,21 +8,26 @@ import { Plus, Eye, EyeOff } from "lucide-react";
 export default function JoinListButton({
     code,
     passwordEnabled,
+    isUnlocked = false,
 }: {
     code: string;
     passwordEnabled: boolean;
+    isUnlocked?: boolean;
 }) {
     const [state, formAction, isPending] = useActionState<JoinListState, FormData>(joinList, {
         success: false,
     });
     const [showPassword, setShowPassword] = useState(false);
 
+    // Show the password field only when a password is required AND the user hasn't already unlocked it
+    const needsPassword = passwordEnabled && !isUnlocked;
+
     return (
         <div className="flex flex-col items-start gap-2">
             <form action={formAction} className="flex flex-col gap-2">
                 <input type="hidden" name="code" value={code} />
 
-                {passwordEnabled && (
+                {needsPassword && (
                     <div className="relative">
                         <input
                             name="password"

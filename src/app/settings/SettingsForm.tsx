@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { updateProfile, type ProfileFormState } from "@/app/actions/updateProfile";
 import type { User } from "@/generated/prisma/client";
 
@@ -18,6 +19,8 @@ type Props = {
         | "youtubeUrl"
         | "twitterUrl"
     >;
+    /** If set, redirect here instead of showing a banner after saving. */
+    callbackUrl?: string;
 };
 
 const initialState: ProfileFormState = { success: false };
@@ -83,13 +86,20 @@ function Field({
 
 // ─── Main Form ────────────────────────────────────────────────────────────────
 
-export default function SettingsForm({ user }: Props) {
+export default function SettingsForm({ user, callbackUrl }: Props) {
+    const router = useRouter();
     const [state, formAction, isPending] = useActionState(updateProfile, initialState);
     const successRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (state.success) successRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }, [state.success]);
+        if (state.success) {
+            if (callbackUrl) {
+                router.push(callbackUrl);
+            } else {
+                successRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        }
+    }, [state.success, callbackUrl, router]);
 
     return (
         <form action={formAction} className="space-y-5">
