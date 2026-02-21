@@ -42,7 +42,7 @@ function Field({
     multiline?: boolean;
 }) {
     const base =
-        "w-full rounded-xl border bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition-colors focus:border-brand focus:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-900";
+        "w-full rounded-2xl border bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition-all focus:border-brand focus:bg-white focus:shadow-sm dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-50 dark:focus:bg-zinc-900";
     const borderClass = errors?.length ? "border-red-400 dark:border-red-500" : "border-zinc-200 dark:border-zinc-800";
 
     return (
@@ -99,8 +99,8 @@ export default function SettingsForm({ user }: Props) {
                 <div
                     ref={state.success ? successRef : undefined}
                     className={`rounded-xl border px-4 py-3 text-sm ${state.success
-                            ? "border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400"
-                            : "border-red-100 bg-red-50 text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400"
+                        ? "border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400"
+                        : "border-red-100 bg-red-50 text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400"
                         }`}
                 >
                     {state.success ? "✓ " : ""}{state.message}
@@ -108,7 +108,7 @@ export default function SettingsForm({ user }: Props) {
             )}
 
             {/* ── About you ── */}
-            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="space-y-4 rounded-3xl border border-zinc-200/80 bg-white/70 p-7 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
                 <div>
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                         About you
@@ -135,7 +135,7 @@ export default function SettingsForm({ user }: Props) {
             </div>
 
             {/* ── Contact info ── */}
-            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="space-y-4 rounded-3xl border border-zinc-200/80 bg-white/70 p-7 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                     Contact info
                 </h2>
@@ -166,7 +166,7 @@ export default function SettingsForm({ user }: Props) {
             </div>
 
             {/* ── Social links ── */}
-            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="space-y-4 rounded-3xl border border-zinc-200/80 bg-white/70 p-7 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                     Social links
                 </h2>
@@ -215,7 +215,7 @@ export default function SettingsForm({ user }: Props) {
             <button
                 type="submit"
                 disabled={isPending}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn-gradient flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-brand/20 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
             >
                 {isPending ? "Saving…" : "Save changes"}
             </button>

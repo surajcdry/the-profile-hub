@@ -35,9 +35,13 @@ function SignInContent() {
     const callbackUrl = searchParams.get("callbackUrl") || "/settings";
 
     return (
-        <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+        <div className="relative flex min-h-screen flex-col bg-[var(--background)]">
+            {/* Aurora background */}
+            <div className="aurora" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 dot-grid opacity-30" aria-hidden />
+
             {/* Back link */}
-            <div className="p-5">
+            <div className="relative p-6">
                 <Link
                     href="/"
                     className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
@@ -48,27 +52,29 @@ function SignInContent() {
             </div>
 
             {/* Centered card */}
-            <div className="flex flex-1 items-center justify-center px-4 pb-12">
-                <div className="w-full max-w-sm">
+            <div className="relative flex flex-1 items-center justify-center px-4 pb-16">
+                <div className="w-full max-w-sm animate-fade-in-up">
                     {/* Logo */}
-                    <div className="mb-8 flex flex-col items-center gap-3">
-                        <LogoIcon size={48} />
+                    <div className="mb-10 flex flex-col items-center gap-4">
+                        <div className="glow-brand rounded-2xl p-1">
+                            <LogoIcon size={52} />
+                        </div>
                         <div className="text-center">
-                            <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                                 Welcome back
                             </h1>
-                            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                            <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                                 Sign in to create and manage your lists
                             </p>
                         </div>
                     </div>
 
                     {/* Sign in card */}
-                    <div className="rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <div className="glass-card rounded-3xl p-8 shadow-xl">
                         <div className="space-y-3">
                             <button
                                 onClick={() => signIn("google", { callbackUrl })}
-                                className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900"
+                                className="card-hover flex w-full items-center justify-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm font-medium text-zinc-700 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
                             >
                                 <GoogleIcon />
                                 Continue with Google
@@ -76,22 +82,22 @@ function SignInContent() {
 
                             <button
                                 onClick={() => signIn("github", { callbackUrl })}
-                                className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:border-zinc-200 dark:bg-white dark:text-zinc-900"
+                                className="card-hover flex w-full items-center justify-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3.5 text-sm font-medium text-white dark:border-zinc-200 dark:bg-white dark:text-zinc-900"
                             >
                                 <Github className="h-4 w-4" />
                                 Continue with GitHub
                             </button>
                         </div>
 
-                        <div className="mt-6 flex items-center gap-3">
-                            <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800" />
+                        <div className="mt-7 flex items-center gap-3">
+                            <div className="h-px flex-1 bg-zinc-200/80 dark:bg-zinc-700/50" />
                             <p className="text-xs text-zinc-400 dark:text-zinc-500">No password required</p>
-                            <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800" />
+                            <div className="h-px flex-1 bg-zinc-200/80 dark:bg-zinc-700/50" />
                         </div>
 
-                        <p className="mt-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+                        <p className="mt-5 text-center text-xs text-zinc-400 dark:text-zinc-500">
                             By continuing, you agree to our{" "}
-                            <span className="underline decoration-dotted">Terms of Service</span>.
+                            <span className="underline decoration-dotted underline-offset-2">Terms of Service</span>.
                         </p>
                     </div>
                 </div>

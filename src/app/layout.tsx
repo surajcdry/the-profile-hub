@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, DM_Serif_Display } from "next/font/google";
 import SessionProvider from "@/components/SessionProvider";
 import { auth } from "@/lib/auth";
 import { Analytics } from "@vercel/analytics/next"
@@ -8,6 +8,13 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const dmSerif = DM_Serif_Display({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-dm-serif",
   display: "swap",
 });
 
@@ -31,9 +38,9 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} antialiased noise-overlay`}>
         <SessionProvider session={session}>{children}</SessionProvider>
-         <Analytics />
+        <Analytics />
       </body>
     </html>
   );

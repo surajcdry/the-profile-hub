@@ -38,7 +38,7 @@ function LinkIcon({ href, label, children, hoverClass }: LinkItemProps) {
             href={href}
             target={href.startsWith("mailto:") || href.startsWith("tel:") ? undefined : "_blank"}
             rel="noopener noreferrer"
-            className={`flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition-colors dark:text-zinc-500 ${hoverClass}`}
+            className={`flex h-8 w-8 items-center justify-center rounded-xl text-zinc-400 transition-all hover:scale-110 dark:text-zinc-500 ${hoverClass}`}
             aria-label={label}
         >
             {children}
@@ -60,19 +60,19 @@ export default function ProfileCard({ user }: { user: ProfileUser }) {
         user.twitterUrl;
 
     return (
-        <div className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="group card-hover flex flex-col rounded-3xl border border-zinc-200/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/80">
             {/* ── Header: Avatar + Name ────────────────────── */}
-            <div className="flex items-center gap-3.5 border-b border-zinc-100 pb-4 dark:border-zinc-800">
+            <div className="flex items-center gap-3.5 border-b border-zinc-100/80 pb-4 dark:border-zinc-800/50">
                 {user.image ? (
                     <Image
                         src={user.image}
                         alt={user.name ?? "Avatar"}
                         width={44}
                         height={44}
-                        className="shrink-0 rounded-full ring-2 ring-zinc-100 dark:ring-zinc-800"
+                        className="shrink-0 rounded-full ring-2 ring-white shadow-sm transition-transform group-hover:scale-105 dark:ring-zinc-800"
                     />
                 ) : (
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-light text-sm font-semibold text-brand-dark">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-accent text-sm font-semibold text-white shadow-sm transition-transform group-hover:scale-105">
                         {initials}
                     </div>
                 )}
@@ -98,7 +98,7 @@ export default function ProfileCard({ user }: { user: ProfileUser }) {
             </div>
 
             {/* ── Links footer ───────────────────── */}
-            <div className="mt-auto flex flex-wrap items-center gap-1 border-t border-zinc-100 pt-4 dark:border-zinc-800">
+            <div className="mt-auto flex flex-wrap items-center gap-1 border-t border-zinc-100/80 pt-4 dark:border-zinc-800/50">
                 {user.contactEmail && (
                     <LinkIcon href={`mailto:${user.contactEmail}`} label="Email" hoverClass="hover:bg-brand-pale hover:text-brand">
                         <Mail className="h-4 w-4" />

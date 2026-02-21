@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { createList } from "@/app/actions/createList";
 import ThemeToggle from "./ThemeToggle";
 import { Logo } from "./Logo";
+import HeroParticles from "./HeroParticles";
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
@@ -56,17 +57,17 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
     return (
         <div
             ref={overlayRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-md"
             onClick={(e) => e.target === overlayRef.current && onClose()}
         >
-            <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border border-zinc-100 dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="animate-scale-in w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-zinc-900/5 dark:bg-zinc-900 dark:ring-zinc-100/5">
                 <div className="mb-6 flex items-start justify-between">
                     <h2 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                         {title}
                     </h2>
                     <button
                         onClick={onClose}
-                        className="ml-4 rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+                        className="ml-4 rounded-xl p-2 text-zinc-400 transition-all hover:bg-zinc-100 hover:text-zinc-600 hover:rotate-90 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
                         aria-label="Close"
                     >
                         <X className="h-4 w-4" />
@@ -204,7 +205,7 @@ function CreateListModal({
                 <button
                     type="submit"
                     disabled={!name.trim() || isPending}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
+                    className="btn-gradient flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand/20 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
                 >
                     {isPending
                         ? "Creating…"
@@ -290,9 +291,9 @@ function JoinListModal({
                 <button
                     type="submit"
                     disabled={code.length < CODE_LENGTH}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
+                    className="btn-gradient flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand/20 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
                 >
-                    Go to group <ArrowRight className="h-4 w-4" />
+                    <span>Go to group</span> <ArrowRight className="h-4 w-4" />
                 </button>
             </form>
         </Modal>
@@ -314,7 +315,7 @@ function AuthButton() {
         return (
             <button
                 onClick={() => signIn()}
-                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-800"
+                className="card-hover flex items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-600 transition-all hover:border-brand/30 hover:text-brand dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-brand/40 dark:hover:text-brand"
             >
                 <LogIn className="h-3.5 w-3.5" />
                 Sign in
@@ -368,17 +369,19 @@ function MockCard({
     name,
     role,
     color,
+    delay,
 }: {
     initials: string;
     name: string;
     role: string;
     color: string;
+    delay?: string;
 }) {
     return (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex items-center gap-3 border-b border-zinc-100 pb-3 dark:border-zinc-800">
+        <div className={`card-hover rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-800/50 animate-fade-in ${delay || ""}`}>
+            <div className="flex items-center gap-3 border-b border-zinc-100/80 pb-3 dark:border-zinc-700/50">
                 <div
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${color}`}
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white shadow-sm ${color}`}
                 >
                     {initials}
                 </div>
@@ -388,8 +391,8 @@ function MockCard({
                 </div>
             </div>
             <div className="pt-3 space-y-1.5">
-                <div className="h-2 w-3/4 rounded-full bg-zinc-100 dark:bg-zinc-800" />
-                <div className="h-2 w-1/2 rounded-full bg-zinc-100 dark:bg-zinc-800" />
+                <div className="h-2 w-3/4 rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
+                <div className="h-2 w-1/2 rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
             </div>
         </div>
     );
@@ -403,14 +406,14 @@ export default function HomeClient() {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-zinc-950">
+        <div className="min-h-screen bg-[var(--background)]">
             {/* ── Header ─────────────────────────────────────── */}
-            <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-                <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5">
+            <header className="sticky top-0 z-40 glass border-b border-zinc-200/50 dark:border-zinc-800/50">
+                <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
                     <Logo />
 
                     {/* Desktop & Mobile nav */}
-                    <nav className="flex items-center gap-3">
+                    <nav className="flex items-center gap-4">
                         <AuthButton />
                     </nav>
                 </div>
@@ -418,28 +421,33 @@ export default function HomeClient() {
 
             {/* ── Hero ───────────────────────────────────────── */}
             <section className="relative overflow-hidden">
-                {/* Soft gradient background */}
-                <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
-                    <div className="absolute -top-32 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-brand-pale opacity-70 blur-3xl" />
-                </div>
+                {/* Aurora gradient background */}
+                <div className="aurora" aria-hidden><span aria-hidden /></div>
+                {/* Dot grid pattern overlay */}
+                <div className="pointer-events-none absolute inset-0 -z-[5] dot-grid opacity-40" aria-hidden />
+                {/* Animated particles */}
+                <HeroParticles />
 
-                <div className="mx-auto grid max-w-5xl grid-cols-1 gap-16 px-5 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
+                <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 gap-16 px-6 py-24 lg:grid-cols-2 lg:items-center lg:py-32">
                     {/* Text */}
-                    <div>
-                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-pale px-3 py-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                    <div className="animate-fade-in">
+                        <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-brand-border/50 bg-white/60 px-4 py-1.5 shadow-sm backdrop-blur-sm dark:border-brand-border/20 dark:bg-zinc-900/60">
+                            <span className="relative flex h-2 w-2">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+                                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
+                            </span>
                             <span className="text-xs font-medium text-brand tracking-wide">
-                                Free · No app needed · Works everywhere
+                                Free &middot; No app needed &middot; Works everywhere
                             </span>
                         </div>
 
-                        <h1 className="mb-5 text-[clamp(2.2rem,5vw,3.5rem)] font-semibold leading-[1.1] tracking-tight text-zinc-900 dark:text-zinc-50">
-                            Everyone's info,
+                        <h1 className="mb-6 text-[clamp(2.5rem,5.5vw,4rem)] leading-[1.05] tracking-tight text-zinc-900 dark:text-zinc-50">
+                            <span className="font-semibold">Everyone's info,</span>
                             <br />
-                            <span className="text-brand">one place.</span>
+                            <span className="font-display gradient-text">one place.</span>
                         </h1>
 
-                        <p className="mb-10 max-w-md text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
+                        <p className="mb-10 max-w-lg text-lg leading-relaxed text-zinc-500 dark:text-zinc-400">
                             Perfect for events, meetups, and teams. Start a group,
                             share one link or QR code, and let everyone add their
                             own contact details — no app download needed.
@@ -448,36 +456,46 @@ export default function HomeClient() {
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                             <button
                                 onClick={() => setCreateOpen(true)}
-                                className="flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-dark"
+                                className="btn-gradient flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-brand/20 hover:shadow-xl hover:shadow-brand/30 transition-shadow"
                             >
-                                Start a group <ArrowRight className="h-4 w-4" />
+                                <span>Start a group</span> <ArrowRight className="h-4 w-4" />
                             </button>
                             <button
                                 onClick={() => setJoinOpen(true)}
-                                className="flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3.5 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                                className="card-hover flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-8 py-4 text-sm font-medium text-zinc-700 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
                             >
                                 Join with an invite code
                             </button>
                         </div>
 
-                        <p className="mt-8 text-xs text-zinc-400 dark:text-zinc-500">
-                            Completely free · No credit card · Open source
+                        <p className="mt-10 flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500">
+                            <span className="flex items-center gap-1.5">
+                                <span className="h-1 w-1 rounded-full bg-green-400" />
+                                Completely free
+                            </span>
+                            <span className="text-zinc-300 dark:text-zinc-700">&middot;</span>
+                            <span>No credit card</span>
+                            <span className="text-zinc-300 dark:text-zinc-700">&middot;</span>
+                            <span>Open source</span>
                         </p>
                     </div>
 
                     {/* Visual preview */}
-                    <div className="relative hidden lg:block">
-                        <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-                            <div className="mb-4 flex items-center justify-between border-b border-zinc-100 pb-4 dark:border-zinc-800">
+                    <div className="relative hidden lg:block animate-fade-in delay-300">
+                        {/* Decorative glow behind the card */}
+                        <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-br from-brand/10 via-transparent to-accent/10 blur-2xl dark:from-brand/5 dark:to-accent/5" aria-hidden />
+
+                        <div className="glass-card relative rounded-3xl p-5 shadow-2xl shadow-zinc-900/5 dark:shadow-zinc-900/30">
+                            <div className="mb-5 flex items-center justify-between border-b border-zinc-100/80 pb-4 dark:border-zinc-700/50">
                                 <div>
                                     <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                                         Product Design Meetup
                                     </p>
                                     <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                                        3 people • San Francisco
+                                        3 people &bull; San Francisco
                                     </p>
                                 </div>
-                                <span className="rounded-lg bg-zinc-100 px-2.5 py-1 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                                <span className="rounded-lg bg-zinc-100/80 px-2.5 py-1 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-400">
                                     DSN24K
                                 </span>
                             </div>
@@ -487,12 +505,14 @@ export default function HomeClient() {
                                     name="Alice Chen"
                                     role="Product Designer"
                                     color="bg-brand"
+                                    delay="delay-400"
                                 />
                                 <MockCard
                                     initials="BS"
                                     name="Bob Smith"
                                     role="Event Organizer"
                                     color="bg-sky-500"
+                                    delay="delay-500"
                                 />
                             </div>
                             <div className="mt-3">
@@ -501,84 +521,119 @@ export default function HomeClient() {
                                     name="Carol Davis"
                                     role="UX Researcher"
                                     color="bg-teal-500"
+                                    delay="delay-600"
                                 />
                             </div>
                         </div>
+
                         {/* Floating notification */}
-                        <div className="absolute -right-4 -top-4 rounded-xl border border-brand-border bg-brand-pale px-3 py-2 shadow-sm">
-                            <p className="text-xs font-medium text-brand">
-                                ✓ Carol just joined
+                        <div className="absolute -right-3 -top-3 animate-float rounded-2xl border border-brand-border/50 bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm dark:border-brand-border/20 dark:bg-zinc-900/90">
+                            <p className="text-xs font-medium text-brand flex items-center gap-1.5">
+                                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-brand/10">
+                                    <span className="text-[10px]">✓</span>
+                                </span>
+                                Carol just joined
                             </p>
                         </div>
+
+                        {/* Decorative floating orb */}
+                        <div className="absolute -left-8 bottom-12 h-16 w-16 animate-float-delayed rounded-full bg-gradient-to-br from-brand/20 to-accent/20 blur-xl dark:from-brand/10 dark:to-accent/10" aria-hidden />
                     </div>
                 </div>
             </section>
 
             {/* ── How it works ───────────────────────────────── */}
-            <section className="border-t border-zinc-100 bg-zinc-50 px-5 py-20 dark:border-zinc-800 dark:bg-zinc-900/20">
-                <div className="mx-auto max-w-5xl">
-                    <div className="mb-12 text-center">
-                        <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-                            Set up in under a minute
+            <section className="relative border-t border-zinc-200/50 px-6 py-24 dark:border-zinc-800/50">
+                {/* Subtle gradient background */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-zinc-50 via-white to-zinc-50 dark:from-zinc-950 dark:via-zinc-900/30 dark:to-zinc-950" aria-hidden />
+
+                <div className="relative mx-auto max-w-6xl">
+                    <div className="mb-16 text-center animate-fade-in">
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+                            How it works
+                        </p>
+                        <h2 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+                            Set up in under a <span className="font-display gradient-text">minute</span>
                         </h2>
-                        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                        <p className="mx-auto mt-4 max-w-md text-base text-zinc-500 dark:text-zinc-400">
                             No complicated setup, no spam, no clutter.
                         </p>
                     </div>
 
                     <div className="grid gap-6 sm:grid-cols-3">
-                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-                            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-pale dark:bg-brand-dark/20">
-                                <Zap className="h-5 w-5 text-brand dark:text-brand-light" />
+                        {[
+                            {
+                                icon: <Zap className="h-5 w-5" />,
+                                step: "01",
+                                title: "Start a group",
+                                desc: "Sign in and create a group with a name. You'll get a unique invite code right away.",
+                                delayClass: "delay-100",
+                            },
+                            {
+                                icon: <QrCode className="h-5 w-5" />,
+                                step: "02",
+                                title: "Share the invite",
+                                desc: "Share a link, the invite code, or scan the QR code. Works on any device, no login to view.",
+                                delayClass: "delay-300",
+                            },
+                            {
+                                icon: <Users className="h-5 w-5" />,
+                                step: "03",
+                                title: "Everyone joins",
+                                desc: "Each person adds their own contact info — links, social handles, whatever they'd like to share.",
+                                delayClass: "delay-500",
+                            },
+                        ].map((item) => (
+                            <div
+                                key={item.step}
+                                className={`group card-hover rounded-3xl border border-zinc-200/80 bg-white/70 p-7 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/50 animate-fade-in-up ${item.delayClass}`}
+                            >
+                                <div className="mb-5 flex items-center gap-3">
+                                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-pale to-accent-pale text-brand transition-transform group-hover:scale-110 dark:from-brand/10 dark:to-accent/10">
+                                        {item.icon}
+                                    </div>
+                                    <span className="font-mono text-xs font-bold tracking-widest text-zinc-300 dark:text-zinc-600">
+                                        {item.step}
+                                    </span>
+                                </div>
+                                <h3 className="mb-2 text-lg font-semibold text-zinc-900 dark:text-zinc-50">{item.title}</h3>
+                                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                                    {item.desc}
+                                </p>
                             </div>
-                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Step 1</p>
-                            <h3 className="mb-2 font-semibold text-zinc-900 dark:text-zinc-50">Start a group</h3>
-                            <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                                Sign in and create a group with a name. You'll
-                                get a unique invite code right away.
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-                            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-pale dark:bg-brand-dark/20">
-                                <QrCode className="h-5 w-5 text-brand dark:text-brand-light" />
-                            </div>
-                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Step 2</p>
-                            <h3 className="mb-2 font-semibold text-zinc-900 dark:text-zinc-50">Share the invite</h3>
-                            <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                                Share a link, the invite code, or scan the QR
-                                code. Works on any device, no login to view.
-                            </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-                            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-pale dark:bg-brand-dark/20">
-                                <Users className="h-5 w-5 text-brand dark:text-brand-light" />
-                            </div>
-                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Step 3</p>
-                            <h3 className="mb-2 font-semibold text-zinc-900 dark:text-zinc-50">Everyone joins</h3>
-                            <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                                Each person adds their own contact info —
-                                links, social handles, whatever they'd like to
-                                share.
-                            </p>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
+            {/* ── Social proof / Trust bar ────────────────────── */}
+            <section className="border-t border-zinc-200/50 px-6 py-16 dark:border-zinc-800/50">
+                <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+                    <div className="flex -space-x-2">
+                        {["bg-brand", "bg-sky-500", "bg-teal-500", "bg-rose-500", "bg-amber-500"].map((c, i) => (
+                            <div key={i} className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white ring-2 ring-white dark:ring-zinc-950 ${c}`}>
+                                {["S", "M", "K", "R", "A"][i]}
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        Trusted by event organizers, meetup hosts, and teams everywhere.
+                    </p>
+                </div>
+            </section>
+
             {/* ── Footer ─────────────────────────────────────── */}
-            <footer className="border-t border-zinc-100 bg-white px-5 py-8 dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
+            <footer className="border-t border-zinc-200/50 bg-white/50 px-6 py-10 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-950/50">
+                <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 sm:flex-row sm:justify-between">
                     <Logo />
                     <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                        © 2025 Profile Hub · Free & Open Source
+                        © {new Date().getFullYear()} Profile Hub &middot; Free & Open Source
                     </p>
-                    <div className="flex items-center gap-5">
-                        <Link href="/about" className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors dark:text-zinc-500 dark:hover:text-zinc-300">
+                    <div className="flex items-center gap-6">
+                        <Link href="/about" className="link-underline text-xs text-zinc-400 transition-colors dark:text-zinc-500 dark:hover:text-zinc-300 hover:text-zinc-700">
                             About
                         </Link>
-                        <Link href="/privacy" className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors dark:text-zinc-500 dark:hover:text-zinc-300">
+                        <Link href="/privacy" className="link-underline text-xs text-zinc-400 transition-colors dark:text-zinc-500 dark:hover:text-zinc-300 hover:text-zinc-700">
                             Privacy
                         </Link>
                         <ThemeToggle />

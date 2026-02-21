@@ -5,31 +5,40 @@
 
 /* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
-  --background:       #ffffff;
-  --foreground:       #18181b;
-  /* Brand — #238df3 blue */
-  --brand:            #238df3;
-  --brand-dark:       #1874c9;
-  --brand-pale:       #eff8ff;
-  --brand-light:      #dbeffe;
-  --brand-border:     #93c8fb;
+  --background: #fafafa;
+  --foreground: #18181b;
+  /* Brand — refined blue palette */
+  --brand: #2563eb;
+  --brand-dark: #1d4ed8;
+  --brand-pale: #eff6ff;
+  --brand-light: #dbeafe;
+  --brand-border: #93c5fd;
+  /* Accent — warm violet for highlights */
+  --accent: #7c3aed;
+  --accent-pale: #f5f3ff;
 }
 
 .dark {
-  --background:       #09090b;
-  --foreground:       #fafafa;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --brand-pale: rgba(37, 99, 235, 0.08);
+  --brand-light: rgba(37, 99, 235, 0.15);
+  --accent-pale: rgba(124, 58, 237, 0.08);
 }
 
 @theme inline {
-  --color-background:    var(--background);
-  --color-foreground:    var(--foreground);
-  --font-sans:           var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-dm-serif), Georgia, "Times New Roman", serif;
   /* Brand utilities: bg-brand, text-brand, border-brand, etc. */
-  --color-brand:         var(--brand);
-  --color-brand-dark:    var(--brand-dark);
-  --color-brand-pale:    var(--brand-pale);
-  --color-brand-light:   var(--brand-light);
-  --color-brand-border:  var(--brand-border);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-pale: var(--brand-pale);
+  --color-brand-light: var(--brand-light);
+  --color-brand-border: var(--brand-border);
+  --color-accent: var(--accent);
+  --color-accent-pale: var(--accent-pale);
 }
 
 body {
@@ -47,4 +56,528 @@ html {
 :focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
+}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes float-delayed {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes border-glow {
+
+  0%,
+  100% {
+    border-color: var(--brand-border);
+  }
+
+  50% {
+    border-color: var(--brand);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease-out both;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 5s ease-in-out 1s infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s ease-out both;
+}
+
+/* Staggered animation delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+.delay-600 {
+  animation-delay: 600ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+/* ── Glass morphism ───────────────────────────────────────────────────────── */
+
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+.dark .glass {
+  background: rgba(9, 9, 11, 0.75);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-card {
+  background: rgba(24, 24, 27, 0.6);
+  border-color: rgba(63, 63, 70, 0.3);
+}
+
+/* ── Gradient text ────────────────────────────────────────────────────────── */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glow effects ─────────────────────────────────────────────────────────── */
+
+.glow-brand {
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.15),
+    0 0 60px rgba(37, 99, 235, 0.05);
+}
+
+.dark .glow-brand {
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.25),
+    0 0 60px rgba(37, 99, 235, 0.1);
+}
+
+/* ── Elegant card hover ───────────────────────────────────────────────────── */
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Smooth underline link ────────────────────────────────────────────────── */
+
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--brand);
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* ── Aurora background ────────────────────────────────────────────────────── */
+
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.aurora::before,
+.aurora::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.75;
+  animation: gradient-shift 10s ease infinite;
+}
+
+.aurora::before {
+  width: 700px;
+  height: 700px;
+  top: -250px;
+  left: 5%;
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.7) 0%, transparent 65%);
+  animation: gradient-shift 10s ease infinite;
+}
+
+.aurora::after {
+  width: 600px;
+  height: 600px;
+  bottom: -150px;
+  right: 0%;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.6) 0%, transparent 65%);
+  animation-delay: -5s;
+}
+
+/* Third aurora orb */
+.aurora>span {
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  width: 400px;
+  height: 400px;
+  top: 20%;
+  left: 40%;
+  opacity: 0.55;
+  background: radial-gradient(circle, rgba(165, 180, 252, 0.7) 0%, transparent 70%);
+  animation: gradient-shift 14s ease-in-out infinite;
+  animation-delay: -7s;
+}
+
+.dark .aurora::before {
+  opacity: 0.35;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.5) 0%, transparent 65%);
+}
+
+.dark .aurora::after {
+  opacity: 0.3;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, transparent 65%);
+}
+
+.dark .aurora>span {
+  opacity: 0.2;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.4) 0%, transparent 70%);
+}
+
+/* ── Dot grid pattern ─────────────────────────────────────────────────────── */
+
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .dot-grid {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+/* ── Button gradient ──────────────────────────────────────────────────────── */
+
+.btn-gradient {
+  background: linear-gradient(135deg, var(--brand) 0%, #4f46e5 100%);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #4f46e5 0%, var(--brand) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-gradient:hover::before {
+  opacity: 1;
+}
+
+.btn-gradient>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Noise texture overlay (subtle) ───────────────────────────────────────── */
+
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.015;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dark .noise-overlay::before {
+  opacity: 0.03;
+}
+
+/* ── Sparkle particles (DOM-based) ────────────────────────────────────────── */
+
+@keyframes sparkle-twinkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(0deg);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(0.8) rotate(90deg);
+  }
+
+  80% {
+    opacity: 1;
+    transform: scale(1.1) rotate(135deg);
+  }
+}
+
+@keyframes sparkle-drift {
+
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  25% {
+    translate: 15px -20px;
+  }
+
+  50% {
+    translate: -10px -35px;
+  }
+
+  75% {
+    translate: 20px -15px;
+  }
+}
+
+/* Base sparkle */
+.sparkle {
+  display: block;
+  width: var(--sparkle-size, 6px);
+  height: var(--sparkle-size, 6px);
+  animation:
+    sparkle-twinkle var(--sparkle-duration, 4s) ease-in-out var(--sparkle-delay, 0s) infinite,
+    sparkle-drift var(--sparkle-drift, 12s) ease-in-out var(--sparkle-delay, 0s) infinite;
+}
+
+/* Dot / circle */
+.sparkle-dot {
+  border-radius: 50%;
+  background: var(--sparkle-color, rgba(37, 99, 235, 0.7));
+  box-shadow:
+    0 0 calc(var(--sparkle-size, 6px) * 2) var(--sparkle-color, rgba(37, 99, 235, 0.5)),
+    0 0 calc(var(--sparkle-size, 6px) * 4) var(--sparkle-color, rgba(37, 99, 235, 0.2));
+}
+
+/* 4-point star via clip-path */
+.sparkle-star {
+  background: var(--sparkle-color, rgba(79, 70, 229, 0.7));
+  clip-path: polygon(50% 0%, 61% 35%, 100% 35%, 68% 57%,
+      79% 91%, 50% 70%, 21% 91%, 32% 57%,
+      0% 35%, 39% 35%);
+  box-shadow:
+    0 0 calc(var(--sparkle-size, 6px) * 2) var(--sparkle-color, rgba(79, 70, 229, 0.5));
+}
+
+/* Cross / plus sparkle */
+.sparkle-cross {
+  background: transparent;
+  position: relative;
+}
+
+.sparkle-cross::before,
+.sparkle-cross::after {
+  content: '';
+  position: absolute;
+  background: var(--sparkle-color, rgba(124, 58, 237, 0.7));
+  border-radius: 2px;
+}
+
+.sparkle-cross::before {
+  width: 30%;
+  height: 100%;
+  left: 35%;
+  top: 0;
+}
+
+.sparkle-cross::after {
+  width: 100%;
+  height: 30%;
+  left: 0;
+  top: 35%;
+}
+
+/* Ring */
+.sparkle-ring {
+  border-radius: 50%;
+  background: transparent;
+  border: calc(var(--sparkle-size, 6px) * 0.2) solid var(--sparkle-color, rgba(99, 102, 241, 0.6));
+  box-shadow:
+    0 0 calc(var(--sparkle-size, 6px) * 1.5) var(--sparkle-color, rgba(99, 102, 241, 0.3)),
+    inset 0 0 calc(var(--sparkle-size, 6px) * 1) var(--sparkle-color, rgba(99, 102, 241, 0.15));
+}
+
+/* Dark mode: brighter colors */
+.dark .sparkle-dot {
+  --sparkle-color: rgba(96, 165, 250, 0.6);
+}
+
+.dark .sparkle-star {
+  --sparkle-color: rgba(167, 139, 250, 0.55);
+}
+
+.dark .sparkle-cross::before,
+.dark .sparkle-cross::after {
+  background: rgba(192, 132, 252, 0.5);
+}
+
+.dark .sparkle-ring {
+  border-color: rgba(129, 140, 248, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkle {
+    animation: none;
+    opacity: 0.4;
+  }
 }

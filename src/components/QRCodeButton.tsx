@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { QrCode, X, Download, Check } from "lucide-react";
 import QRCodeLib from "qrcode";
 
@@ -70,13 +71,13 @@ export default function QRCodeButton({ url, name, size = "md", password }: QRCod
                 QR Code
             </button>
 
-            {isOpen && (
+            {isOpen && typeof document !== "undefined" && createPortal(
                 <div
                     ref={overlayRef}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 px-4 backdrop-blur-md"
                     onClick={(e) => e.target === overlayRef.current && setIsOpen(false)}
                 >
-                    <div className="w-full max-w-xs rounded-3xl border border-zinc-100 bg-white p-8 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900">
+                    <div className="animate-scale-in w-full max-w-xs rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-zinc-900/5 dark:bg-zinc-900 dark:ring-zinc-100/5">
                         {/* Header */}
                         <div className="mb-5 flex items-start justify-between">
                             <div>
@@ -114,7 +115,7 @@ export default function QRCodeButton({ url, name, size = "md", password }: QRCod
 
                         {/* Password (only shown to creator) */}
                         {password && (
-                            <div className="mb-4 flex items-center justify-center gap-2 rounded-xl border border-brand-border bg-brand-pale px-4 py-2.5 dark:border-brand-dark dark:bg-brand-dark/20 text-brand dark:text-brand-light">
+                            <div className="mb-4 flex items-center justify-center gap-2 rounded-xl border border-brand-border/60 bg-brand-pale px-4 py-2.5 text-brand dark:border-blue-400/30 dark:bg-blue-950/40 dark:text-blue-300">
                                 <span className="text-xs font-medium">Password:</span>
                                 <span className="font-mono text-sm font-bold tracking-wide">
                                     {password}
@@ -132,7 +133,8 @@ export default function QRCodeButton({ url, name, size = "md", password }: QRCod
                             {downloaded ? "Downloaded!" : "Download PNG"}
                         </button>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </>
     );

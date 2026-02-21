@@ -15,7 +15,7 @@ export function LogoIcon({
             className={className}
             aria-label="Profile Hub logo"
         >
-            <rect width="36" height="36" rx="9" fill="#238df3" />
+            <rect width="36" height="36" rx="9" fill="#2563eb" />
             {/* Connection lines */}
             <line x1="18" y1="18" x2="10" y2="11" stroke="white" strokeWidth="1.5" strokeOpacity="0.45" strokeLinecap="round" />
             <line x1="18" y1="18" x2="26" y2="11" stroke="white" strokeWidth="1.5" strokeOpacity="0.45" strokeLinecap="round" />

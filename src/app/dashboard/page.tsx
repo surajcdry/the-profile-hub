@@ -65,17 +65,17 @@ export default async function DashboardPage() {
     });
 
     return (
-        <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+        <div className="flex min-h-screen flex-col bg-[var(--background)]">
             {/* ── Header ─────────────────────────────────────── */}
-            <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-                <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5">
+            <header className="sticky top-0 z-40 glass border-b border-zinc-200/50 dark:border-zinc-800/50">
+                <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
                     <Link href="/">
                         <Logo />
                     </Link>
                     <div className="flex items-center gap-3">
                         <Link
                             href="/settings"
-                            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+                            className="card-hover flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-50"
                         >
                             <Settings className="h-3.5 w-3.5" />
                             <span className="hidden sm:block">Settings</span>
@@ -86,10 +86,10 @@ export default async function DashboardPage() {
                                 alt={user.name ?? "Avatar"}
                                 width={28}
                                 height={28}
-                                className="rounded-full ring-2 ring-zinc-100 dark:ring-zinc-800"
+                                className="rounded-full ring-2 ring-white shadow-sm dark:ring-zinc-800"
                             />
                         ) : (
-                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-light text-xs font-semibold text-brand-dark">
+                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand to-accent text-xs font-semibold text-white shadow-sm">
                                 {user?.name?.[0]?.toUpperCase() ?? <User className="h-3.5 w-3.5" />}
                             </span>
                         )}
@@ -98,28 +98,28 @@ export default async function DashboardPage() {
             </header>
 
             {/* ── Content ──────────────────────────────────── */}
-            <main className="mx-auto max-w-5xl px-5 py-10">
+            <main className="mx-auto max-w-6xl px-6 py-12">
                 {/* Page title + stats */}
-                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                             Dashboard
                         </h1>
-                        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                             Welcome back
                             {user?.name ? `, ${user.name.split(" ")[0]}` : ""}!
                         </p>
                     </div>
                     {/* Stats pills */}
-                    <div className="flex items-center gap-2">
-                        <div className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-                            <p className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                    <div className="flex items-center gap-3">
+                        <div className="card-hover rounded-2xl border border-zinc-200/80 bg-white/70 px-5 py-3 text-center shadow-sm backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
+                            <p className="text-2xl font-semibold gradient-text">
                                 {createdLists.length}
                             </p>
                             <p className="text-xs text-zinc-400 dark:text-zinc-500">Created</p>
                         </div>
-                        <div className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-                            <p className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                        <div className="card-hover rounded-2xl border border-zinc-200/80 bg-white/70 px-5 py-3 text-center shadow-sm backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
+                            <p className="text-2xl font-semibold gradient-text">
                                 {joinedOnlyLists.length}
                             </p>
                             <p className="text-xs text-zinc-400 dark:text-zinc-500">Joined</p>
@@ -140,9 +140,9 @@ export default async function DashboardPage() {
                         </div>
 
                         {createdLists.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-white py-16 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                                    <Plus className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
+                            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-300/80 bg-white/50 py-16 text-center backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-900/30">
+                                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-pale to-accent-pale dark:from-brand/10 dark:to-accent/10">
+                                    <Plus className="h-5 w-5 text-brand" />
                                 </div>
                                 <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">No lists yet</p>
                                 <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
@@ -150,18 +150,17 @@ export default async function DashboardPage() {
                                 </p>
                                 <Link
                                     href="/"
-                                    className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-dark"
+                                    className="btn-gradient mt-5 inline-flex items-center gap-1.5 rounded-2xl px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-brand/20"
                                 >
-                                    <Plus className="h-4 w-4" />
-                                    Create a list
+                                    <span><Plus className="h-4 w-4 inline" /> Create a list</span>
                                 </Link>
                             </div>
                         ) : (
-                            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                 {createdLists.map((list) => (
                                     <div
                                         key={list.id}
-                                        className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+                                        className="card-hover flex flex-col rounded-3xl border border-zinc-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70"
                                     >
                                         <div className="mb-4 flex items-start justify-between gap-3">
                                             <div className="min-w-0">
@@ -178,12 +177,19 @@ export default async function DashboardPage() {
                                             </span>
                                         </div>
 
+                                        {list.description && (
+                                            <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                                                {list.description}
+                                            </p>
+                                        )}
+
                                         <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-zinc-100 pt-4 dark:border-zinc-800">
                                             <CopyLinkButton url={`${baseUrl}/list/${list.code}`} />
                                             <QRCodeButton
                                                 url={`${baseUrl}/list/${list.code}`}
                                                 name={list.name}
                                                 size="sm"
+                                                password={list.password}
                                             />
                                             <Link
                                                 href={`/list/${list.code}`}
@@ -210,9 +216,9 @@ export default async function DashboardPage() {
                         </div>
 
                         {joinedOnlyLists.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-white py-16 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                                    <ListIcon className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
+                            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-300/80 bg-white/50 py-16 text-center backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-900/30">
+                                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-pale to-accent-pale dark:from-brand/10 dark:to-accent/10">
+                                    <ListIcon className="h-5 w-5 text-brand" />
                                 </div>
                                 <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">No joined lists</p>
                                 <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
@@ -220,11 +226,11 @@ export default async function DashboardPage() {
                                 </p>
                             </div>
                         ) : (
-                            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                 {joinedOnlyLists.map((list) => (
                                     <div
                                         key={list.id}
-                                        className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+                                        className="card-hover flex flex-col rounded-3xl border border-zinc-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/70"
                                     >
                                         <div className="mb-4 flex items-start justify-between gap-3">
                                             <div className="min-w-0">
@@ -240,6 +246,12 @@ export default async function DashboardPage() {
                                                 {list.code}
                                             </span>
                                         </div>
+
+                                        {list.description && (
+                                            <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                                                {list.description}
+                                            </p>
+                                        )}
 
                                         <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-zinc-100 pt-4 dark:border-zinc-800">
                                             <CopyLinkButton url={`${baseUrl}/list/${list.code}`} />
@@ -264,8 +276,8 @@ export default async function DashboardPage() {
             </main>
 
             {/* ── Footer ─────────────────────────────────────── */}
-            <footer className="mt-auto border-t border-zinc-100 bg-white py-6 dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="mx-auto flex max-w-5xl items-center justify-between px-5">
+            <footer className="mt-auto border-t border-zinc-200/50 bg-white/50 py-8 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-950/50">
+                <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
                     <p className="text-xs text-zinc-400 dark:text-zinc-500">© 2025 Profile Hub</p>
                     <ThemeToggle />
                 </div>

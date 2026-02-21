@@ -38,10 +38,10 @@ export default async function SettingsPage() {
     if (!user) redirect("/sign-in?callbackUrl=/settings");
 
     return (
-        <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+        <div className="flex min-h-screen flex-col bg-[var(--background)]">
             {/* ── Header ─────────────────────────────────────── */}
-            <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-                <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
+            <header className="sticky top-0 z-40 glass border-b border-zinc-200/50 dark:border-zinc-800/50">
+                <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-6">
                     <Link href="/">
                         <Logo />
                     </Link>
@@ -69,7 +69,7 @@ export default async function SettingsPage() {
             </header>
 
             {/* ── Content ────────────────────────────────────── */}
-            <main className="mx-auto max-w-2xl px-5 py-10">
+            <main className="mx-auto max-w-2xl px-6 py-12">
                 <div className="mb-2">
                     <Link
                         href="/dashboard"
@@ -79,11 +79,11 @@ export default async function SettingsPage() {
                         Back to dashboard
                     </Link>
                 </div>
-                <div className="mb-8 mt-4">
-                    <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                <div className="mb-10 mt-4">
+                    <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                         Profile settings
                     </h1>
-                    <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+                    <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
                         This information appears on your profile card in every
                         list you join.
                     </p>
@@ -93,8 +93,8 @@ export default async function SettingsPage() {
             </main>
 
             {/* ── Footer ─────────────────────────────────────── */}
-            <footer className="mt-auto border-t border-zinc-100 bg-white py-6 dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="mx-auto flex max-w-2xl items-center justify-between px-5">
+            <footer className="mt-auto border-t border-zinc-200/50 bg-white/50 py-8 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-950/50">
+                <div className="mx-auto flex max-w-2xl items-center justify-between px-6">
                     <p className="text-xs text-zinc-400 dark:text-zinc-500">© 2025 Profile Hub</p>
                     <ThemeToggle />
                 </div>

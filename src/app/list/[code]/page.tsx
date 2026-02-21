@@ -65,10 +65,10 @@ export default async function ListPage({ params }: Props) {
     const listUrl = `${protocol}://${host}/list/${list.code}`;
 
     return (
-        <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+        <div className="flex min-h-screen flex-col bg-[var(--background)]">
             {/* ── Header ─────────────────────────────────────── */}
-            <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-                <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5">
+            <header className="sticky top-0 z-40 glass border-b border-zinc-200/50 dark:border-zinc-800/50">
+                <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
                     <Link href="/">
                         <Logo />
                     </Link>
@@ -80,7 +80,7 @@ export default async function ListPage({ params }: Props) {
                             <ArrowLeft className="h-4 w-4" />
                             Dashboard
                         </Link>
-                        <span className="rounded-lg bg-zinc-100 px-2.5 py-1 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        <span className="rounded-xl bg-zinc-100/80 px-3 py-1.5 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-400">
                             {list.code}
                         </span>
                     </div>
@@ -88,11 +88,11 @@ export default async function ListPage({ params }: Props) {
             </header>
 
             {/* ── Content ──────────────────────────────────── */}
-            <main className="mx-auto max-w-5xl px-5 py-10">
+            <main className="mx-auto max-w-6xl px-6 py-12">
                 {/* List Header Info */}
-                <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                <div className="mb-12 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">
+                        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-50">
                             {list.name}
                         </h1>
                         <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
@@ -104,6 +104,12 @@ export default async function ListPage({ params }: Props) {
                                 {list.members.length === 1 ? "member" : "members"}
                             </span>
                         </div>
+
+                        {list.description && (
+                            <p className="mt-3 max-w-lg text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                                {list.description}
+                            </p>
+                        )}
 
                         {/* Share buttons */}
                         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -143,7 +149,7 @@ export default async function ListPage({ params }: Props) {
 
                     {isMember && !isCreator && (
                         <div className="flex shrink-0 items-center gap-3">
-                            <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400">
+                            <div className="rounded-xl border border-green-200/80 bg-green-50/80 px-4 py-2 text-sm font-medium text-green-700 backdrop-blur-sm dark:border-green-900/30 dark:bg-green-900/15 dark:text-green-400">
                                 ✓ You're a member
                             </div>
                             <LeaveListButton
@@ -155,7 +161,7 @@ export default async function ListPage({ params }: Props) {
                         </div>
                     )}
                     {isCreator && (
-                        <div className="shrink-0 rounded-xl border border-brand-border bg-brand-pale px-4 py-2 text-sm font-medium text-brand dark:border-brand-dark/30 dark:bg-brand-dark/10 dark:text-brand-light">
+                        <div className="shrink-0 rounded-2xl border border-brand-border/50 bg-brand-pale/80 px-5 py-2.5 text-sm font-medium text-brand backdrop-blur-sm dark:border-brand-dark/30 dark:bg-brand-dark/10 dark:text-brand-light">
                             ★ You're the host
                         </div>
                     )}
@@ -165,9 +171,9 @@ export default async function ListPage({ params }: Props) {
                 {needsUnlock ? (
                     <UnlockListForm code={list.code} />
                 ) : list.members.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-white py-24 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                            <Users className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
+                    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-300/80 bg-white/50 py-28 text-center backdrop-blur-sm dark:border-zinc-700/50 dark:bg-zinc-900/30">
+                        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-pale to-accent-pale dark:from-brand/10 dark:to-accent/10">
+                            <Users className="h-6 w-6 text-brand" />
                         </div>
                         <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
                             It's quiet here
@@ -177,7 +183,7 @@ export default async function ListPage({ params }: Props) {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {list.members.map((member) => (
                             <ProfileCard key={member.id} user={member.user} />
                         ))}
@@ -186,8 +192,8 @@ export default async function ListPage({ params }: Props) {
             </main>
 
             {/* ── Footer ─────────────────────────────────────── */}
-            <footer className="mt-auto border-t border-zinc-100 bg-white py-6 dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="mx-auto flex max-w-5xl items-center justify-between px-5">
+            <footer className="mt-auto border-t border-zinc-200/50 bg-white/50 py-8 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-950/50">
+                <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
                     <p className="text-xs text-zinc-400 dark:text-zinc-500">© 2025 Profile Hub</p>
                     <ThemeToggle />
                 </div>
