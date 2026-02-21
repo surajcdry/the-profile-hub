@@ -2,14 +2,14 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import { Pool } from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { neon } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@/generated/prisma/client";
 
-// Build a dedicated PrismaClient for auth (separate from the hot-reload singleton)
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prismAuth = new PrismaClient({ adapter });
+// Dedicated PrismaClient for auth using Neon HTTP driver (no TCP handshake on cold start)
+const sql = neon(process.env.DATABASE_URL!);
+const neonAdapter = new PrismaNeon(sql);
+const prismAuth = new PrismaClient({ adapter: neonAdapter });
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: PrismaAdapter(prismAuth),
