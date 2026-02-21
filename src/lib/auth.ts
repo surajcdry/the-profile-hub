@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import { Pool } from "@neondatabase/serverless";
+import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
@@ -17,10 +17,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            allowDangerousEmailAccountLinking: true,
         }),
         GitHub({
             clientId: process.env.NODE_ENV === "development" ? process.env.GITHUB_CLIENT_ID_LOCAL! : process.env.GITHUB_CLIENT_ID!,
             clientSecret: process.env.NODE_ENV === "development" ? process.env.GITHUB_CLIENT_SECRET_LOCAL! : process.env.GITHUB_CLIENT_SECRET!,
+            allowDangerousEmailAccountLinking: true,
         }),
     ],
     session: { strategy: "database" },

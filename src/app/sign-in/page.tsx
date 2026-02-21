@@ -1,7 +1,11 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { Github } from "lucide-react";
+import { Github, ArrowLeft } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import Link from "next/link";
+import { LogoIcon } from "@/components/Logo";
 
 function GoogleIcon() {
     return (
@@ -26,48 +30,80 @@ function GoogleIcon() {
     );
 }
 
-export default function SignInPage() {
+function SignInContent() {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/settings";
+
     return (
-        <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
-            <div className="w-full max-w-sm">
-                {/* Logo */}
-                <div className="mb-8 text-center">
-                    <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
-                        The Profile Hub
-                    </h1>
-                    <p className="mt-1 text-sm text-zinc-500">Sign in to continue</p>
-                </div>
+        <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+            {/* Back link */}
+            <div className="p-5">
+                <Link
+                    href="/"
+                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to home
+                </Link>
+            </div>
 
-                <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
-                    <div className="space-y-3">
-                        <button
-                            onClick={() => signIn("google", { callbackUrl: "/settings" })}
-                            className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50"
-                        >
-                            <GoogleIcon />
-                            Continue with Google
-                        </button>
-
-                        <button
-                            onClick={() => signIn("github", { callbackUrl: "/settings" })}
-                            className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-200 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-80"
-                        >
-                            <Github className="h-4 w-4" />
-                            Continue with GitHub
-                        </button>
+            {/* Centered card */}
+            <div className="flex flex-1 items-center justify-center px-4 pb-12">
+                <div className="w-full max-w-sm">
+                    {/* Logo */}
+                    <div className="mb-8 flex flex-col items-center gap-3">
+                        <LogoIcon size={48} />
+                        <div className="text-center">
+                            <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                                Welcome back
+                            </h1>
+                            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                                Sign in to create and manage your lists
+                            </p>
+                        </div>
                     </div>
 
-                    <p className="mt-6 text-center text-xs text-zinc-400">
-                        By continuing, you agree to our Terms of Service.
-                    </p>
-                </div>
+                    {/* Sign in card */}
+                    <div className="rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => signIn("google", { callbackUrl })}
+                                className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900"
+                            >
+                                <GoogleIcon />
+                                Continue with Google
+                            </button>
 
-                <p className="mt-6 text-center text-xs text-zinc-400">
-                    <a href="/" className="hover:text-zinc-700 transition-colors">
-                        ← Back to home
-                    </a>
-                </p>
+                            <button
+                                onClick={() => signIn("github", { callbackUrl })}
+                                className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:border-zinc-200 dark:bg-white dark:text-zinc-900"
+                            >
+                                <Github className="h-4 w-4" />
+                                Continue with GitHub
+                            </button>
+                        </div>
+
+                        <div className="mt-6 flex items-center gap-3">
+                            <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800" />
+                            <p className="text-xs text-zinc-400 dark:text-zinc-500">No password required</p>
+                            <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800" />
+                        </div>
+
+                        <p className="mt-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+                            By continuing, you agree to our{" "}
+                            <span className="underline decoration-dotted">Terms of Service</span>.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
+    );
+}
+
+export default function SignInPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-zinc-50 dark:bg-zinc-950" />}>
+            <SignInContent />
+        </Suspense>
     );
 }

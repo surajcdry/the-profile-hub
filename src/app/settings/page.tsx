@@ -4,14 +4,17 @@ import { db } from "@/lib/db";
 import SettingsForm from "./SettingsForm";
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
+import { Logo } from "@/components/Logo";
+import ThemeToggle from "@/components/ThemeToggle";
 
-export const metadata = { title: "Settings · The Profile Hub" };
+export const metadata = { title: "Settings · Profile Hub" };
 
 export default async function SettingsPage() {
     const session = await auth();
 
     if (!session?.user?.id) {
-        redirect("/api/auth/signin");
+        redirect("/sign-in?callbackUrl=/settings");
     }
 
     const user = await db.user.findUnique({
@@ -21,25 +24,26 @@ export default async function SettingsPage() {
             email: true,
             image: true,
             bio: true,
+            contactEmail: true,
+            phoneNumber: true,
+            websiteUrl: true,
             linkedinUrl: true,
             githubUrl: true,
             instagramUrl: true,
-            phoneNumber: true,
+            youtubeUrl: true,
+            twitterUrl: true,
         },
     });
 
-    if (!user) redirect("/api/auth/signin");
+    if (!user) redirect("/sign-in?callbackUrl=/settings");
 
     return (
-        <div className="min-h-screen bg-zinc-50">
+        <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
             {/* ── Header ─────────────────────────────────────── */}
-            <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md">
+            <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
                 <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
-                    <Link
-                        href="/"
-                        className="text-sm font-semibold tracking-tight text-zinc-900 hover:opacity-70 transition-opacity"
-                    >
-                        The Profile Hub
+                    <Link href="/">
+                        <Logo />
                     </Link>
                     <div className="flex items-center gap-3">
                         {user.image && (
@@ -48,15 +52,15 @@ export default async function SettingsPage() {
                                 alt={user.name ?? "Avatar"}
                                 width={28}
                                 height={28}
-                                className="rounded-full"
+                                className="rounded-full ring-2 ring-zinc-100 dark:ring-zinc-800"
                             />
                         )}
-                        <span className="hidden text-sm text-zinc-500 sm:block">
+                        <span className="hidden max-w-[160px] truncate text-sm text-zinc-500 sm:block dark:text-zinc-400">
                             {user.email}
                         </span>
                         <Link
                             href="/api/auth/signout"
-                            className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+                            className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
                         >
                             Sign out
                         </Link>
@@ -65,19 +69,36 @@ export default async function SettingsPage() {
             </header>
 
             {/* ── Content ────────────────────────────────────── */}
-            <main className="mx-auto max-w-2xl px-5 py-12">
-                <div className="mb-8">
-                    <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+            <main className="mx-auto max-w-2xl px-5 py-10">
+                <div className="mb-2">
+                    <Link
+                        href="/dashboard"
+                        className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to dashboard
+                    </Link>
+                </div>
+                <div className="mb-8 mt-4">
+                    <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                         Profile settings
                     </h1>
-                    <p className="mt-1 text-sm text-zinc-500">
-                        This information will appear on your public profile card in any list
-                        you join.
+                    <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+                        This information appears on your profile card in every
+                        list you join.
                     </p>
                 </div>
 
                 <SettingsForm user={user} />
             </main>
+
+            {/* ── Footer ─────────────────────────────────────── */}
+            <footer className="mt-auto border-t border-zinc-100 bg-white py-6 dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="mx-auto flex max-w-2xl items-center justify-between px-5">
+                    <p className="text-xs text-zinc-400 dark:text-zinc-500">© 2025 Profile Hub</p>
+                    <ThemeToggle />
+                </div>
+            </footer>
         </div>
     );
 }

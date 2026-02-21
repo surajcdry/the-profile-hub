@@ -7,9 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")       // pooled connection (runtime)
-  directUrl = env("DIRECT_URL")         // direct connection (migrations)
+  provider = "postgresql"
 }
 
 // ─── Auth.js (NextAuth v5) Models ─────────────────────────────────────────────
@@ -63,10 +61,14 @@ model User {
   emailVerified DateTime?
   image         String?
   bio           String?
+  contactEmail  String?
+  phoneNumber   String?
+  websiteUrl    String?
   linkedinUrl   String?
   githubUrl     String?
   instagramUrl  String?
-  phoneNumber   String?
+  youtubeUrl    String?
+  twitterUrl    String?
 
   accounts     Account[]
   sessions     Session[]
@@ -77,11 +79,14 @@ model User {
 }
 
 model List {
-  id        String   @id @default(cuid())
-  name      String
-  code      String   @unique @db.VarChar(6)
-  createdAt DateTime @default(now())
-  creatorId String
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  code            String   @unique @db.VarChar(6)
+  createdAt       DateTime @default(now())
+  creatorId       String
+  passwordEnabled Boolean  @default(false)
+  password        String?  // plaintext event-access code (not a personal credential)
 
   creator User         @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   members ListMember[]

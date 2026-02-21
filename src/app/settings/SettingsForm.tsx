@@ -7,7 +7,16 @@ import type { User } from "@/generated/prisma/client";
 type Props = {
     user: Pick<
         User,
-        "name" | "bio" | "linkedinUrl" | "githubUrl" | "instagramUrl" | "phoneNumber"
+        | "name"
+        | "bio"
+        | "contactEmail"
+        | "phoneNumber"
+        | "websiteUrl"
+        | "linkedinUrl"
+        | "githubUrl"
+        | "instagramUrl"
+        | "youtubeUrl"
+        | "twitterUrl"
     >;
 };
 
@@ -33,14 +42,14 @@ function Field({
     multiline?: boolean;
 }) {
     const base =
-        "w-full rounded-xl border bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition-colors focus:border-zinc-400 focus:bg-white";
-    const borderClass = errors?.length ? "border-red-400" : "border-zinc-200";
+        "w-full rounded-xl border bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition-colors focus:border-brand focus:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:bg-zinc-900";
+    const borderClass = errors?.length ? "border-red-400 dark:border-red-500" : "border-zinc-200 dark:border-zinc-800";
 
     return (
         <div>
             <label
                 htmlFor={name}
-                className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400"
+                className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400 dark:text-zinc-500"
             >
                 {label}
             </label>
@@ -64,7 +73,7 @@ function Field({
                 />
             )}
             {errors?.map((e) => (
-                <p key={e} className="mt-1 text-xs text-red-500">
+                <p key={e} className="mt-1 text-xs text-red-500 dark:text-red-400">
                     {e}
                 </p>
             ))}
@@ -89,22 +98,27 @@ export default function SettingsForm({ user }: Props) {
             {state.message && (
                 <div
                     ref={state.success ? successRef : undefined}
-                    className={`rounded-xl px-4 py-3 text-sm ${state.success
-                            ? "bg-zinc-100 text-zinc-700"
-                            : "bg-red-50 text-red-600"
+                    className={`rounded-xl border px-4 py-3 text-sm ${state.success
+                            ? "border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400"
+                            : "border-red-100 bg-red-50 text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400"
                         }`}
                 >
-                    {state.message}
+                    {state.success ? "✓ " : ""}{state.message}
                 </div>
             )}
 
-            {/* ── Identity ── */}
-            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-                    Identity
-                </h2>
+            {/* ── About you ── */}
+            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <div>
+                    <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                        About you
+                    </h2>
+                    <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
+                        This shows on your profile card in every group you join.
+                    </p>
+                </div>
                 <Field
-                    label="Name"
+                    label="Display name"
                     name="name"
                     defaultValue={user.name}
                     errors={state.errors?.name}
@@ -115,22 +129,45 @@ export default function SettingsForm({ user }: Props) {
                     name="bio"
                     defaultValue={user.bio}
                     errors={state.errors?.bio}
-                    placeholder="A short description about yourself"
+                    placeholder="A short description — what you do, your interests…"
                     multiline
                 />
+            </div>
+
+            {/* ── Contact info ── */}
+            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                    Contact info
+                </h2>
                 <Field
-                    label="Phone"
+                    label="Email address"
+                    name="contactEmail"
+                    defaultValue={user.contactEmail}
+                    errors={state.errors?.contactEmail}
+                    type="email"
+                    placeholder="hello@example.com"
+                />
+                <Field
+                    label="Phone number"
                     name="phoneNumber"
                     defaultValue={user.phoneNumber}
                     errors={state.errors?.phoneNumber}
                     type="tel"
                     placeholder="+1 (555) 000-0000"
                 />
+                <Field
+                    label="Website"
+                    name="websiteUrl"
+                    defaultValue={user.websiteUrl}
+                    errors={state.errors?.websiteUrl}
+                    type="url"
+                    placeholder="https://yourwebsite.com"
+                />
             </div>
 
             {/* ── Social links ── */}
-            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+            <div className="space-y-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                     Social links
                 </h2>
                 <Field
@@ -157,12 +194,28 @@ export default function SettingsForm({ user }: Props) {
                     type="url"
                     placeholder="https://instagram.com/yourname"
                 />
+                <Field
+                    label="YouTube"
+                    name="youtubeUrl"
+                    defaultValue={user.youtubeUrl}
+                    errors={state.errors?.youtubeUrl}
+                    type="url"
+                    placeholder="https://youtube.com/@yourchannel"
+                />
+                <Field
+                    label="X / Twitter"
+                    name="twitterUrl"
+                    defaultValue={user.twitterUrl}
+                    errors={state.errors?.twitterUrl}
+                    type="url"
+                    placeholder="https://x.com/yourhandle"
+                />
             </div>
 
             <button
                 type="submit"
                 disabled={isPending}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-3.5 text-sm font-medium text-white transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {isPending ? "Saving…" : "Save changes"}
             </button>
