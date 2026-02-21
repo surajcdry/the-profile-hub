@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, type FormEvent } from "react";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, User, LogIn } from "lucide-react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
@@ -15,7 +18,6 @@ type ModalProps = {
 function Modal({ isOpen, onClose, title, children }: ModalProps) {
     const overlayRef = useRef<HTMLDivElement>(null);
 
-    // Close on Escape
     useEffect(() => {
         if (!isOpen) return;
         const handler = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -23,7 +25,6 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         return () => document.removeEventListener("keydown", handler);
     }, [isOpen, onClose]);
 
-    // Lock body scroll
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
@@ -58,13 +59,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
 // ─── Create List Modal ────────────────────────────────────────────────────────
 
-function CreateListModal({
-    isOpen,
-    onClose,
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-}) {
+function CreateListModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const [name, setName] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -76,7 +71,6 @@ function CreateListModal({
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!name.trim()) return;
-        // TODO: wire to server action / API
         alert(`List "${name.trim()}" will be created!`);
         onClose();
     };
@@ -84,15 +78,11 @@ function CreateListModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Create a list">
             <p className="mb-6 text-sm leading-relaxed text-zinc-500">
-                Give your list a name. You'll get a short 6-character code to share with
-                your team.
+                Give your list a name. You'll get a short 6-character code to share with your team.
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label
-                        htmlFor="list-name"
-                        className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400"
-                    >
+                    <label htmlFor="list-name" className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400">
                         List name
                     </label>
                     <input
@@ -111,8 +101,7 @@ function CreateListModal({
                     disabled={!name.trim()}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-30"
                 >
-                    Create list
-                    <ArrowRight className="h-4 w-4" />
+                    Create list <ArrowRight className="h-4 w-4" />
                 </button>
             </form>
         </Modal>
@@ -123,13 +112,7 @@ function CreateListModal({
 
 const CODE_LENGTH = 6;
 
-function JoinListModal({
-    isOpen,
-    onClose,
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-}) {
+function JoinListModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const [code, setCode] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -139,14 +122,12 @@ function JoinListModal({
     }, [isOpen]);
 
     const handleInput = (val: string) => {
-        // Strip non-alphanumeric, uppercase, cap at 6 chars
         setCode(val.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, CODE_LENGTH));
     };
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (code.length < CODE_LENGTH) return;
-        // TODO: wire to server action / API
         alert(`Joining list with code "${code}"!`);
         onClose();
     };
@@ -154,15 +135,11 @@ function JoinListModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Join a list">
             <p className="mb-6 text-sm leading-relaxed text-zinc-500">
-                Enter the 6-character code shared by the list creator to join their
-                list.
+                Enter the 6-character code shared by the list creator to join their list.
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label
-                        htmlFor="list-code"
-                        className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400"
-                    >
+                    <label htmlFor="list-code" className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400">
                         List code
                     </label>
                     <input
@@ -177,20 +154,69 @@ function JoinListModal({
                         spellCheck={false}
                         className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-center font-mono text-lg tracking-[0.35em] text-zinc-900 outline-none placeholder:tracking-normal placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white transition-colors"
                     />
-                    <p className="mt-1.5 text-right text-xs text-zinc-400">
-                        {code.length}/{CODE_LENGTH}
-                    </p>
+                    <p className="mt-1.5 text-right text-xs text-zinc-400">{code.length}/{CODE_LENGTH}</p>
                 </div>
                 <button
                     type="submit"
                     disabled={code.length < CODE_LENGTH}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-30"
                 >
-                    Join list
-                    <ArrowRight className="h-4 w-4" />
+                    Join list <ArrowRight className="h-4 w-4" />
                 </button>
             </form>
         </Modal>
+    );
+}
+
+// ─── Auth Button ──────────────────────────────────────────────────────────────
+
+function AuthButton() {
+    const { data: session, status } = useSession();
+
+    if (status === "loading") {
+        return <div className="h-7 w-7 animate-pulse rounded-full bg-zinc-200" />;
+    }
+
+    if (!session) {
+        return (
+            <button
+                onClick={() => signIn()}
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
+            >
+                <LogIn className="h-3.5 w-3.5" />
+                Sign in
+            </button>
+        );
+    }
+
+    return (
+        <div className="flex items-center gap-2">
+            <Link
+                href="/settings"
+                className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100"
+            >
+                {session.user?.image ? (
+                    <Image
+                        src={session.user.image}
+                        alt={session.user.name ?? "Avatar"}
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                    />
+                ) : (
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-200">
+                        <User className="h-3.5 w-3.5 text-zinc-500" />
+                    </span>
+                )}
+                <span className="hidden sm:block">{session.user?.name?.split(" ")[0] ?? "Profile"}</span>
+            </Link>
+            <button
+                onClick={() => signOut()}
+                className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+            >
+                Sign out
+            </button>
+        </div>
     );
 }
 
@@ -221,13 +247,13 @@ export default function HomeClient() {
                         >
                             Create a list
                         </button>
+                        <AuthButton />
                     </nav>
                 </div>
             </header>
 
             {/* ── Hero ──────────────────────────────────────── */}
             <main className="mx-auto flex min-h-[calc(100svh-56px)] max-w-3xl flex-col items-start justify-center px-5 py-24">
-                {/* Badge */}
                 <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1">
                     <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
                     <span className="text-xs font-medium text-zinc-500 tracking-wide">
@@ -235,28 +261,24 @@ export default function HomeClient() {
                     </span>
                 </div>
 
-                {/* Headline */}
                 <h1 className="mb-5 text-[clamp(2.4rem,6vw,4rem)] font-semibold leading-[1.1] tracking-tight text-zinc-900">
                     Share profiles
                     <br />
                     <span className="text-zinc-400">without the noise.</span>
                 </h1>
 
-                {/* Sub-copy */}
                 <p className="mb-12 max-w-md text-base leading-relaxed text-zinc-500">
-                    Create a shared list, get a short code, and let your team add their
-                    own profiles — in seconds, no account required.
+                    Create a shared list, get a short code, and let your team add their own profiles — in
+                    seconds, no account required.
                 </p>
 
-                {/* CTAs */}
                 <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
                     <button
                         id="create-list-btn"
                         onClick={() => setCreateOpen(true)}
                         className="flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-3.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-80"
                     >
-                        Create a list
-                        <ArrowRight className="h-4 w-4" />
+                        Create a list <ArrowRight className="h-4 w-4" />
                     </button>
                     <button
                         id="join-list-btn"
@@ -267,7 +289,6 @@ export default function HomeClient() {
                     </button>
                 </div>
 
-                {/* Social proof hint */}
                 <p className="mt-10 text-xs text-zinc-400">
                     No sign up · No email required · Works on all devices
                 </p>
