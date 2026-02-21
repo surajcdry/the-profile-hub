@@ -140,7 +140,7 @@ function PrefixField({
     const borderClass = errors?.length ? "border-red-400 dark:border-red-500" : "border-zinc-200 dark:border-zinc-800";
 
     return (
-        <div>
+        <div className="max-w-full">
             <label
                 htmlFor={name}
                 className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-zinc-400 dark:text-zinc-500"
@@ -151,7 +151,7 @@ function PrefixField({
                 className={`flex items-stretch overflow-hidden rounded-2xl border transition-all focus-within:border-brand focus-within:shadow-sm ${borderClass}`}
             >
                 {/* Fixed prefix — visually distinct background */}
-                <span className="flex select-none items-center whitespace-nowrap border-r border-zinc-200 bg-zinc-100 px-3.5 text-sm font-medium text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+                <span className="flex shrink-0 select-none items-center whitespace-nowrap border-r border-zinc-200 bg-zinc-100 px-2.5 text-xs font-medium text-zinc-500 sm:px-3.5 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
                     {prefix}
                 </span>
                 {/* Username input */}
@@ -161,7 +161,7 @@ function PrefixField({
                     type="text"
                     defaultValue={defaultValue ?? ""}
                     placeholder={placeholder}
-                    className="min-w-0 flex-1 bg-zinc-50/80 px-3.5 py-3 text-sm font-medium text-zinc-900 outline-none placeholder:font-normal placeholder:text-zinc-400 focus:bg-white dark:bg-zinc-900/80 dark:text-zinc-50 dark:focus:bg-zinc-900"
+                    className="min-w-0 flex-1 bg-zinc-50/80 px-2.5 py-3 text-sm font-medium text-zinc-900 outline-none placeholder:font-normal placeholder:text-zinc-400 focus:bg-white sm:px-3.5 dark:bg-zinc-900/80 dark:text-zinc-50 dark:focus:bg-zinc-900"
                 />
             </div>
             {errors?.map((e) => (

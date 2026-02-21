@@ -43,7 +43,7 @@ export default async function SettingsPage({ searchParams }: Props) {
     if (!user) redirect("/sign-in?callbackUrl=/settings");
 
     return (
-        <div className="flex min-h-screen flex-col bg-[var(--background)]">
+        <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)]">
             {/* ── Header ─────────────────────────────────────── */}
             <header className="sticky top-0 z-40 glass border-b border-zinc-200/50 dark:border-zinc-800/50">
                 <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-6">
