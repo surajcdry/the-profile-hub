@@ -1,12 +1,22 @@
-import { PrismaClient } from "@/generated/prisma";
-import { generateListCode } from "@/lib/utils";
+import "dotenv/config";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../src/generated/prisma/client";
+import { nanoid } from "nanoid";
 
-const prisma = new PrismaClient();
+// Use standard pg (TCP) for seed — @neondatabase/serverless needs Edge/WebSocket env
+const pool = new Pool({ connectionString: process.env.DIRECT_URL ?? process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+
+/** Generates a short URL-friendly code of given length */
+function generateListCode(length = 6): string {
+    return nanoid(length);
+}
 
 async function main() {
     console.log("🌱 Seeding database...");
 
-    // Create a test user
     const user = await prisma.user.upsert({
         where: { email: "seed@example.com" },
         update: {},
@@ -17,34 +27,27 @@ async function main() {
             githubUrl: "https://github.com/seeduser",
         },
     });
+    console.log("✅ User:", user.id, user.email);
 
-    console.log("✅ User created:", user.id, user.email);
-
-    // Create a test list
     const list = await prisma.list.upsert({
-        where: { code: "abc123" },
-        update: {},
+        where: { code: "seed01" },
+        update: { name: "Test List" },
         create: {
             name: "Test List",
-            code: generateListCode(6),
+            code: "seed01",
             creatorId: user.id,
         },
     });
+    console.log("✅ List:", list.id, `code: ${list.code}`);
 
-    console.log("✅ List created:", list.id, `code: ${list.code}`);
-
-    // Add user as a member of the list
     const membership = await prisma.listMember.upsert({
         where: { listId_userId: { listId: list.id, userId: user.id } },
         update: {},
-        create: {
-            listId: list.id,
-            userId: user.id,
-        },
+        create: { listId: list.id, userId: user.id },
     });
+    console.log("✅ Membership:", membership.id);
 
-    console.log("✅ Membership created:", membership.id);
-
+    console.log("🔑 Sample generated code:", generateListCode(6));
     console.log("✨ Seeding complete.");
 }
 
@@ -53,4 +56,7 @@ main()
         console.error("❌ Seed failed:", e);
         process.exit(1);
     })
-    .finally(() => prisma.$disconnect());
+    .finally(async () => {
+        await prisma.$disconnect();
+        await pool.end();
+    });
