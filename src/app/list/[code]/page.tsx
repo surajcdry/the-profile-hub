@@ -108,9 +108,6 @@ export default async function ListPage({ params, searchParams }: Props) {
                             <ArrowLeft className="h-4 w-4" />
                             Dashboard
                         </Link>
-                        <span className="rounded-xl bg-zinc-100/80 px-3 py-1.5 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-400">
-                            {list.code}
-                        </span>
                         <UserAvatar />
                     </div>
                 </div>
@@ -125,6 +122,10 @@ export default async function ListPage({ params, searchParams }: Props) {
                             {list.name}
                         </h1>
                         <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+                            <span className="rounded-lg bg-zinc-100/80 px-2.5 py-1 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-400">
+                                {list.code}
+                            </span>
+                            <span className="text-zinc-300 dark:text-zinc-600">·</span>
                             <span>Created by {list.creator.name || "Anonymous"}</span>
                             <span className="text-zinc-300 dark:text-zinc-600">·</span>
                             <span className="flex items-center gap-1">
