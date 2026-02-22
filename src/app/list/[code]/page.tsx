@@ -14,6 +14,7 @@ import ListSettingsModal from "./ListSettingsModal";
 import LeaveListButton from "./LeaveListButton";
 import { cookies } from "next/headers";
 import UnlockListForm from "./UnlockListForm";
+import UserAvatar from "@/components/UserAvatar";
 
 type Props = {
     params: Promise<{ code: string }>;
@@ -110,6 +111,7 @@ export default async function ListPage({ params, searchParams }: Props) {
                         <span className="rounded-xl bg-zinc-100/80 px-3 py-1.5 font-mono text-xs font-semibold tracking-widest text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-400">
                             {list.code}
                         </span>
+                        <UserAvatar />
                     </div>
                 </div>
             </header>

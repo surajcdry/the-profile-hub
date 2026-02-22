@@ -2,13 +2,13 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import Link from "next/link";
-import Image from "next/image";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import QRCodeButton from "@/components/QRCodeButton";
-import { ArrowRight, List as ListIcon, Plus, Settings, User } from "lucide-react";
+import { ArrowRight, List as ListIcon, Plus, Settings } from "lucide-react";
 import { headers } from "next/headers";
 import { Logo } from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
+import UserAvatar from "@/components/UserAvatar";
 
 export const metadata = {
     title: "Dashboard · Profile Hub",
@@ -82,19 +82,7 @@ export default async function DashboardPage() {
                             <Settings className="h-3.5 w-3.5" />
                             <span className="hidden sm:block">Settings</span>
                         </Link>
-                        {user?.image ? (
-                            <Image
-                                src={user.image}
-                                alt={user.name ?? "Avatar"}
-                                width={28}
-                                height={28}
-                                className="rounded-full ring-2 ring-white shadow-sm dark:ring-zinc-800"
-                            />
-                        ) : (
-                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand to-accent text-xs font-semibold text-white shadow-sm">
-                                {user?.name?.[0]?.toUpperCase() ?? <User className="h-3.5 w-3.5" />}
-                            </span>
-                        )}
+                        <UserAvatar />
                     </div>
                 </div>
             </header>

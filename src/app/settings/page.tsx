@@ -3,10 +3,10 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import SettingsForm from "./SettingsForm";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
+import UserAvatar from "@/components/UserAvatar";
 
 export const metadata = { title: "Settings · Profile Hub" };
 
@@ -51,24 +51,13 @@ export default async function SettingsPage({ searchParams }: Props) {
                         <Logo />
                     </Link>
                     <div className="flex items-center gap-3">
-                        {user.image && (
-                            <Image
-                                src={user.image}
-                                alt={user.name ?? "Avatar"}
-                                width={28}
-                                height={28}
-                                className="rounded-full ring-2 ring-zinc-100 dark:ring-zinc-800"
-                            />
-                        )}
-                        <span className="hidden max-w-[160px] truncate text-sm text-zinc-500 sm:block dark:text-zinc-400">
-                            {user.email}
-                        </span>
                         <Link
-                            href="/api/auth/signout"
+                            href="/dashboard"
                             className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
                         >
-                            Sign out
+                            Dashboard
                         </Link>
+                        <UserAvatar />
                     </div>
                 </div>
             </header>
@@ -95,6 +84,16 @@ export default async function SettingsPage({ searchParams }: Props) {
                 </div>
 
                 <SettingsForm user={user} callbackUrl={callbackUrl} />
+
+                {/* Sign out */}
+                <div className="mt-8 flex justify-center">
+                    <Link
+                        href="/api/auth/signout"
+                        className="text-sm font-medium text-red-500 transition-colors hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                        Sign out
+                    </Link>
+                </div>
             </main>
 
             {/* ── Footer ─────────────────────────────────────── */}

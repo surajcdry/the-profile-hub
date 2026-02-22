@@ -352,12 +352,6 @@ function AuthButton() {
                     {session.user?.name?.split(" ")[0] ?? "Profile"}
                 </span>
             </Link>
-            <button
-                onClick={() => signOut()}
-                className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors dark:text-zinc-500 dark:hover:text-zinc-300"
-            >
-                Sign out
-            </button>
         </div>
     );
 }
